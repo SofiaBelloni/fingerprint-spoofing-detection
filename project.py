@@ -1,5 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import scipy.linalg
+import seaborn
+
 def load_dataset(filename):
     samples = []
     labels = []
@@ -7,7 +10,7 @@ def load_dataset(filename):
         for line in f:
             splitted = line.split(",")
             sample = [float(i) for i in splitted[0:10]]
-            label = float(splitted[10].strip())
+            label = int(splitted[10].strip())
             samples.append(sample)
             labels.append(label)
     # Forse dobbiamo trasporre i samples, ci serve un vettore colonna.
@@ -44,6 +47,14 @@ def plot_scatter(features, labels):
             plt.tight_layout()
             plt.savefig('.\Scatter\scatter_%d-%d.png' % (i, j))
 
+def compute_pearson_correlation(features, color, title):
+    corr = np.corrcoef(features)
+    plt.figure()
+    seaborn.heatmap(corr, cmap=color)
+    #plt.show()
+    plt.savefig('.\Correlation\%s.png' % title)
+    print('Pearson Correlation')
+
 def covariance_matrix(features):
     # Compute mean
     x_bar = np.mean(features, 1).reshape(features.shape[0], 1)
@@ -53,6 +64,27 @@ def covariance_matrix(features):
     C = np.dot(z, z.T) / features.shape[1]
     return C
 
+def between_class_covariance_matrix(features, labels):
+    C_matrices = []
+    mu = np.mean(features, 1).reshape(features.shape[0], 1)
+    for i in set(labels):
+        feat_c = features[:, labels==i]
+        mu_c = np.mean(feat_c, 1).reshape(feat_c.shape[0], 1)
+        diff = mu_c - mu
+        C_matrices.append(np.dot(diff, diff.T) * feat_c.shape[1])
+    
+    C_matrices = np.array(C_matrices)
+    return C_matrices.sum(0) / features.shape[1]
+
+def within_class_covariance_matrix(features, labels):
+    C_matrices = []
+    for i in set(labels):
+        feat_c = features[:, labels==i]
+        S_Wc = covariance_matrix(feat_c)
+        C_matrices.append(S_Wc * feat_c.shape[1])
+    C_matrices = np.array(C_matrices)
+    return C_matrices.sum(0) / features.shape[1]
+
 
 def PCA(features, m = 2):
     #1. Compute covariance matrix
@@ -61,6 +93,16 @@ def PCA(features, m = 2):
     _, U = np.linalg.eigh(C)
     P = U[:,::-1][:,0:m]
     return P
+
+def LDA(features, labels, m=2):
+    # Compute between class covariance
+    S_b = between_class_covariance_matrix(features, labels)
+    #Compute within class covariance
+    S_w = within_class_covariance_matrix(features, labels)
+    #Compute eigenvector
+    _, U = scipy.linalg.eigh(S_b, S_w)
+    W = U[:,::-1][:,0:m]
+    return W
 
 def print_dataset_info(features, labels):
     print('Features shape')
@@ -80,28 +122,6 @@ def scatter_pca(features, labels):
     plt.scatter(feat_1[0], feat_1[1], label='Authentical')
     plt.savefig('.\Scatter\scatter-pca.png')
     #plt.show()
-
-
-
-### LOADING THE DATASET ###
-features_train, labels_train = load_dataset('Train.txt')
-features_test, labels_test = load_dataset('Test.txt')
-
-### PRINTING THE DATASET ###
-print_dataset_info(features_train, labels_test)
-print_dataset_info(features_test, labels_test)
-
-### PLOTTING THE DATASET ###
-#plot_histogram(features_train, labels_train, 'hist')
-#plot_scatter(features_train, labels_train)
-
-###PCA###
-P = PCA(features_train)
-y = np.dot(P.T, features_train)
-plot_histogram(y, labels_train, 'hist-pca')
-scatter_pca(y, labels_train)
-
-
 
 
 

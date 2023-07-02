@@ -46,5 +46,11 @@ Ok fatto
 Per poi valutare effettivamente qual è il contributo di tale tecnica, dobbiamo fare dei test con valori di m diversi, e vedere in che modo questi contribuiscono ad una migliore precisione. (Per ogni metodo di classificazione che implementeremo).
 
 ## LDA
+fatta 
 
+## Pearson correlation
+Fatto, da analizzare
+
+## Gaussianized features
+Da valutare e capire se dobbiamo metterle
 ## Altro
