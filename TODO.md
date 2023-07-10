@@ -97,5 +97,30 @@ Ok fatto
 * 10
 
 
+## TODO LIST 11.07
+1. Implementare minDCF
+2. Iniziare il report 
+2.1. Scrivere il report
+2.2. Man mano che il report lo richiede, ottenere risultato dal codice.
+In the future: Consegnare il progetto e pregare Cristo
+
+# Analisi sulle domande che possono uscire all'esame.
+## Ultimo esame
+* MVG Standard, Tied and Naive Bayes
+* Logistic Regression, comparazione tra SVM loss function e come si estende per definire i vincoli non lineari.
+## Esempi di domande
+* PCA
+* LR
+
+Quindi:
+1. Confronto tra PCA ed LDA
+2. LDA
+3. GMM (molto probabile)
+4. MVG Multiclasse
+5. Logistic Regression Multiclasse
+6. SVM
+7. Metriche (molto probabile)
+
+
 
 
