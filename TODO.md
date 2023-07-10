@@ -81,6 +81,8 @@ ok fatto
 È importante notare che, sebbene la quadratic feature expansion possa essere efficace nel catturare modelli non lineari, può anche portare a uno spazio di feature più ampio e aumentare potenzialmente il rischio di overfitting. Pertanto, è importante bilanciare attentamente la complessità dell'espansione delle feature con i dati disponibili e le prestazioni del modello. Le tecniche di regolarizzazione, come la regolarizzazione L1 o L2, possono aiutare a mitigare l'overfitting nei modelli di regressione logistica.
 
 ## Support Vector Machines
+C è un iperparametro da testare con valori 0.1, 1, 10
+Ok fatto
 
 ## Gaussian Mixture Models
 
