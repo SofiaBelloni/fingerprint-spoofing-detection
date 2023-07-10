@@ -3,6 +3,12 @@ import matplotlib.pyplot as plt
 import scipy.linalg
 import seaborn
 
+def vcol(v):
+    return v.reshape(v.size, 1)
+
+def vrow(v):
+    return v.reshape(1, v.size)
+
 def load_dataset(filename):
     samples = []
     labels = []

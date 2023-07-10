@@ -1,11 +1,8 @@
 import numpy as np
-from project import covariance_matrix
+import scipy
+from project import * 
 
-def vcol(v):
-    return v.reshape(v.size, 1)
 
-def vrow(v):
-    return v.reshape(1, v.size)
 
 def compute_ML_estimates(features, labels):
     total_sigma = []
@@ -14,7 +11,6 @@ def compute_ML_estimates(features, labels):
         feat_c = features[:, labels==c]
         total_sigma.append(covariance_matrix(feat_c))
         total_mu.append(vcol(np.mean(feat_c)))
-
     return np.array(total_sigma), np.array(total_mu)
 
 def logpdf_GAU_ND_Array(X, mu, C):
@@ -29,7 +25,6 @@ def logpdf_GAU_ND_Array(X, mu, C):
 def gaussian_classifier(features_train, labels_train, features_test):
     sigma, mu = compute_ML_estimates(features_train, labels_train)
 
-    print(sigma.shape)
     #  **** CLASSIFICATION ****
 
     # first step: compute, for each test sample, the likelihoods
@@ -38,7 +33,6 @@ def gaussian_classifier(features_train, labels_train, features_test):
     # contains the conditional log-likelihoods for all the samples for that class.
     S = []
     for c in set(labels_train):
-        print(c)
         s = sigma[c, :, :]
         m = mu[c, :]
         fcond = np.exp(logpdf_GAU_ND_Array(features_test, m, s))
@@ -51,6 +45,44 @@ def gaussian_classifier(features_train, labels_train, features_test):
     Post_prob = SJoint / SMarginal
     #The predicted label is obtained as the class that has maximum posterior probability.
     return np.argmax(Post_prob, axis=0)
+
+def nb_gaussian_classifier(features_train, labels_train, features_test):
+    sigma, mu = compute_ML_estimates(features_train, labels_train)
+    S = []
+    for c in set(labels_train):
+        s = sigma[c, :, :]
+        s = s * np.identity(s.shape[0])
+        m = mu[c, :]
+        fcond = np.exp(logpdf_GAU_ND_Array(features_test, m, s))
+        S.append(fcond)
+    p = vcol(np.ones(len(S)) * np.log(1/2))
+    logSJoint = S + p
+    logSMarginal = vrow(scipy.special.logsumexp(logSJoint, axis=0))
+    logPost_prob = logSJoint - logSMarginal
+    Post_prob = np.exp(logPost_prob)
+    return np.argmax(Post_prob, axis=0)
+
+def tied_classifier(features_train, labels_train, features_test):
+    sigma = within_class_covariance_matrix(features_train, labels_train)
+    total_mu = []
+    for c in set(labels_train):
+        feat_c = features_train[:, labels_train==c]
+        total_mu.append(vcol(np.mean(feat_c)))
+    total_mu = np.array(total_mu)
+    S = []
+    for c in set(labels_train):
+        m = total_mu[c, :]
+        fcond = np.exp(logpdf_GAU_ND_Array(features_test, m, sigma))
+        S.append(fcond)
+    p = vcol(np.ones(len(S)) * np.log(1/2))
+    logSJoint = S + p
+    logSMarginal = vrow(scipy.special.logsumexp(logSJoint, axis=0))
+    logPost_prob = logSJoint - logSMarginal
+    Post_prob = np.exp(logPost_prob)
+    return np.argmax(Post_prob, axis=0)
+
+
+
 
 
 

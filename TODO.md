@@ -45,12 +45,50 @@ Ok fatto
 
 Per poi valutare effettivamente qual è il contributo di tale tecnica, dobbiamo fare dei test con valori di m diversi, e vedere in che modo questi contribuiscono ad una migliore precisione. (Per ogni metodo di classificazione che implementeremo).
 
+08.07 - 
+* Plottare la varianza della PCA rispetto alle sue dimensioni.
+Da questo, prendere le top 3 dimensioni della PCA con la percentuale di varianza più alta.
+* Calcolare minDCF
+* * Cos'è minDCF? Un modo per valutare le performance dei nostri modelli (molto generale)
+
 ## LDA
 fatta 
 
 ## Pearson correlation
 Fatto, da analizzare
 
-## Gaussianized features
-Da valutare e capire se dobbiamo metterle
-## Altro
+## K fold cross validation
+* Dividere il training set in K parti.
+* Utilizzare K - 1 parti come training set e la parte rimanente come validation set (che è un test set "ridotto" dal quale valutiamo le performance per quell'iperparametro selezionato)
+Ok fatto
+
+
+## MVG Classifiers
+### 1. Standard version
+Ok fatto
+Ricordarci (eventualmente) di inserire anche la versione logaritmica che dona stabilità numerica. In questo momento non è fatta così.
+
+### 2. Naive Bayes
+Utilizzo della matrice delle covarianze usata per il punto 1, moltiplicata per la matrice identità.
+Ok fatto.
+
+### 3. Tied Classifier
+Ok fatto.
+
+## Logistic Regression
+ok fatto
+## quadratic features expansion 
+È importante notare che, sebbene la quadratic feature expansion possa essere efficace nel catturare modelli non lineari, può anche portare a uno spazio di feature più ampio e aumentare potenzialmente il rischio di overfitting. Pertanto, è importante bilanciare attentamente la complessità dell'espansione delle feature con i dati disponibili e le prestazioni del modello. Le tecniche di regolarizzazione, come la regolarizzazione L1 o L2, possono aiutare a mitigare l'overfitting nei modelli di regressione logistica.
+
+## Support Vector Machines
+
+## Gaussian Mixture Models
+
+## Calibration and fusion
+
+## Evaluation
+
+## Scrittura del report
+
+
+
