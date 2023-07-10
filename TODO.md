@@ -92,5 +92,10 @@ Ok fatto
 
 ## Scrittura del report
 
+## Slide che ci mancano
+* 9
+* 10
+
+
 
 
