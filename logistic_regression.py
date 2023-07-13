@@ -31,11 +31,10 @@ class logRegClass:
         xOpt, fOpt, d = scipy.optimize.fmin_l_bfgs_b(self.logreg_obj, x0,  approx_grad = True)
         return xOpt
     
-    def predict(self, DTE):
+    def compute_scores(self, DTE):
         xOpt = self.train()
         w, b = xOpt[0:-1], xOpt[-1]
         scores = np.zeros(DTE.shape[1])
         for i in range(DTE.shape[1]):
             scores[i] = np.dot(np.transpose(w), DTE[:, i]) + b
-        predictions = scores > 0
-        return predictions
+        return scores

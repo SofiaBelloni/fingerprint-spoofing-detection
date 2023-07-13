@@ -3,11 +3,22 @@ import matplotlib.pyplot as plt
 import scipy.linalg
 import seaborn
 
+pi = 0.5
+Cfn = 1
+Cfp = 10
+
 def vcol(v):
     return v.reshape(v.size, 1)
 
 def vrow(v):
     return v.reshape(1, v.size)
+
+def shuffle_dataset(features_train, labels_train):
+    total_trainset = np.vstack((features_train, labels_train))
+    np.random.shuffle(total_trainset.T)
+    features_train = total_trainset[0:-1, :]
+    labels_train = np.int32(total_trainset[-1, :])
+    return features_train, labels_train
 
 def load_dataset(filename):
     samples = []
@@ -96,9 +107,10 @@ def PCA(features, m = 2):
     #1. Compute covariance matrix
     C = covariance_matrix(features)
     #2. Took the eigenvectors
-    _, U = np.linalg.eigh(C)
+    eigenvalues, U = np.linalg.eigh(C)
+    explained_variance = eigenvalues / np.sum(eigenvalues)
     P = U[:,::-1][:,0:m]
-    return P
+    return P, explained_variance
 
 def LDA(features, labels, m=2):
     # Compute between class covariance
@@ -128,6 +140,23 @@ def scatter_pca(features, labels):
     plt.scatter(feat_1[0], feat_1[1], label='Authentical')
     plt.savefig('.\Scatter\scatter-pca.png')
     #plt.show()
+
+def plot_explained_variance_pca(features):
+
+    _, explained_variance = PCA(features)
+    sorted_indices = np.argsort(explained_variance)[::-1]
+    sorted_explained_variance = explained_variance[sorted_indices]
+    cumulative_variance = np.cumsum(sorted_explained_variance)
+    # Plot della varianza spiegata
+    plt.figure(figsize=(10, 6))
+    plt.plot(range(1, len(cumulative_variance) + 1), cumulative_variance, 'r-o', label='Varianza cumulativa')
+    plt.xlabel('PCA dimensions')
+    plt.ylabel('Fraction of explained variance')
+    plt.grid(color='grey')
+    plt.xticks(range(11))
+    plt.show()
+
+
 
 
 
