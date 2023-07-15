@@ -131,8 +131,8 @@ features_train, labels_train = shuffle_dataset(features_train, labels_train)
 #     znorm_logreg_lambda_results.append(znorm_logreg)
 #     print(f'LOGREG minDCF {logreg} - LAMBDA = {l}')
 #     print(f'ZNORM_LOGREG minDCF {znorm_logreg} - LAMBDA = {l}')
-#     print(f'LOGREG WITH PCA=6 minDCF {logreg_pca} - LAMBDA = {l}')
-#     print(f'ZNORM_LOGREG WITH PCA=6 minDCF {znorm_logreg_pca} - LAMBDA = {l}')
+#     print(f'LOGREG WITH PCA=7 minDCF {logreg_pca} - LAMBDA = {l}')
+#     print(f'ZNORM_LOGREG WITH PCA=7 minDCF {znorm_logreg_pca} - LAMBDA = {l}')
 
 #                     ### PLOT LOGREG VS LOGREG ZNORM ###
 # plt.figure(figsize=(10,6))
@@ -225,7 +225,7 @@ plt.xlabel('λ')
 plt.ylabel('minDCF')
 plt.legend()
 plt.xticks(range(len(lam)), lam)
-plt.savefig('PWlogreg-vs-PWlogregz_norm-pi=05-pt=07.png')
+plt.savefig('PWlogreg-vs-PWlogregz_norm-pi=01-pt=07.png')
 plt.show()
 
 
