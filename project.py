@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import scipy.linalg
 import seaborn
 
-pi = 0.5
+pi = 0.1
 Cfn = 1
 Cfp = 10
 
