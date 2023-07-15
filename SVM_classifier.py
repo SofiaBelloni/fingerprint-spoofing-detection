@@ -1,13 +1,12 @@
-import numpy
+import numpy as np
 import scipy
 from project import vcol, vrow
 
 class SupportVectorMachines:
-    def __init__(self, DTR, LTR, C, mode, pT, gamma=1, d=2, K=1):
+    def __init__(self, DTR, LTR, C, pT, gamma=1, d=2, K=1):
         self.DTR = DTR
         self.LTR = LTR
         self.C = C
-        self.mode = mode
         self.pT = pT
         self.d = d
         self.gamma = gamma
@@ -15,8 +14,8 @@ class SupportVectorMachines:
         self.w_start = None
         self.H = None
     
-    def train(self):
-        DTRext = numpy.vstack([self.DTR, numpy.ones((1, self.DTR.shape[1]))])
+    def train(self, mode):
+        DTRext = np.vstack([self.DTR, np.ones((1, self.DTR.shape[1]))])
         
         DTR0 = self.DTR[:, self.LTR==0]
         DTR1 = self.DTR[:, self.LTR==1]
@@ -27,19 +26,19 @@ class SupportVectorMachines:
         Cf = self.C * self.pT / emp_prior_F
         Ct = self.C * self.pT / emp_prior_T
     
-        Z = numpy.zeros(self.LTR.shape)
+        Z = np.zeros(self.LTR.shape)
         Z[self.LTR == 0] = -1
         Z[self.LTR == 1] = 1
         
-        if self.mode == "linear":
-            H = numpy.dot(DTRext.T, DTRext)
+        if mode == "linear":
+            H = np.dot(DTRext.T, DTRext)
             H = vcol(Z) * vrow(Z) * H
-        elif self.mode == "polynomial":
-            H = numpy.dot(DTRext.T, DTRext) ** self.d
+        elif mode == "polynomial":
+            H = np.dot(DTRext.T, DTRext) ** self.d
             H = vcol(Z) * vrow(Z) * H
-        elif self.mode == "RBF":
-            dist = vcol((self.DTR**2).sum(0)) + vrow((self.DTR**2).sum(0)) - 2*numpy.dot(self.DTR.T, self.DTR)
-            H = numpy.exp(-self.gamma * dist) + self.K
+        elif mode == "RBF":
+            dist = vcol((self.DTR**2).sum(0)) + vrow((self.DTR**2).sum(0)) - 2*np.dot(self.DTR.T, self.DTR)
+            H = np.exp(-self.gamma * dist) + self.K
             H = vcol(Z) * vrow(Z) * H
         
         self.H = H
@@ -53,7 +52,7 @@ class SupportVectorMachines:
         
         alpha_star, x, y = scipy.optimize.fmin_l_bfgs_b(
             self._LDual, 
-            numpy.zeros(self.DTR.shape[1]),
+            np.zeros(self.DTR.shape[1]),
             #bounds = [(0, self.C)] * DTR.shape[1],
             bounds = bounds,
             factr = 1e7,
@@ -61,31 +60,25 @@ class SupportVectorMachines:
             maxfun = 100000
                 )
 
-        self.w_star = numpy.dot(DTRext, vcol(alpha_star) * vcol(Z))
-
-    def temporary_predict(self, DTE):
-        self.train()
-        DTEext = numpy.vstack([DTE, numpy.ones((1, DTE.shape[1]))])
-        S = numpy.dot(self.w_star.T, DTEext)
-        predictions = S > 0
-        return predictions
+        self.w_star = np.dot(DTRext, vcol(alpha_star) * vcol(Z))
     
-    def compute_scores(self, DTE):
-        DTEext = numpy.vstack([DTE, numpy.ones((1, DTE.shape[1]))])
-        S = numpy.dot(self.w_star.T, DTEext)
+    def compute_scores(self, DTE, mode):
+        self.train(mode)
+        DTEext = np.vstack([DTE, np.ones((1, DTE.shape[1]))])
+        S = np.dot(self.w_star.T, DTEext).ravel()
         return S
         
     def _JDual(self, alpha):
-        Ha = numpy.dot(self.H, vcol(alpha))
-        aHa = numpy.dot(vrow(alpha), Ha)
+        Ha = np.dot(self.H, vcol(alpha))
+        aHa = np.dot(vrow(alpha), Ha)
         a1 = alpha.sum()
-        return -0.5 * aHa.ravel() + a1, -Ha.ravel() + numpy.ones(alpha.size)
+        return -0.5 * aHa.ravel() + a1, -Ha.ravel() + np.ones(alpha.size)
     
     def _LDual(self, alpha):
         loss, grad = self._JDual(alpha)
         return -loss, -grad
     
     def _JPrimal(self, DTRext, w, Z):
-        S = numpy.dot(vrow(w), DTRext)
-        loss = numpy.maximum(numpy.zeros(S.shape), 1-Z*S).sum()
-        return 0.5*numpy.linalg.norm(w)**2 + self.C*loss
+        S = np.dot(vrow(w), DTRext)
+        loss = np.maximum(np.zeros(S.shape), 1-Z*S).sum()
+        return 0.5*np.linalg.norm(w)**2 + self.C*loss
