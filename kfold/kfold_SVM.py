@@ -1,5 +1,5 @@
 import sys
-sys.path.append('C:\\Users\\sofia\\Documents\\GitHub\\MLPR-Fingerprint-Spoofing-Detection')
+sys.path.append('C:\\Users\\ferla\\Documents\\GitHub\\MLPR-Fingerprint-Spoofing-Detection')
 from SVM_classifier import *
 from project import *
 from metrics import *
@@ -66,9 +66,9 @@ features_train, labels_train = shuffle_dataset(features_train, labels_train)
 #        SVM: linear, znorm, pca=7
 pt = 0.7
 #pt = 0.3
-#C = [1E-5, 1E-4, 1E-3, 1E-2, 1E-1, 1, 10, 100]
+C = [1E-5, 1E-4, 1E-3, 1E-2, 1E-1, 1, 10, 100]
 
-C = [1E-5, 1E-4, 1E-3, 1E-2, 1E-1, 1]
+#C = [1E-5, 1E-4, 1E-3, 1E-2, 1E-1, 1]
 svm_C_results = []
 znorm_SVM_C_results = []
 svm_PCA_C_results = []
