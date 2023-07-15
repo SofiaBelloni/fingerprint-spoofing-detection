@@ -14,6 +14,7 @@ def vrow(v):
     return v.reshape(1, v.size)
 
 def shuffle_dataset(features_train, labels_train):
+    np.random.seed(10)
     total_trainset = np.vstack((features_train, labels_train))
     np.random.shuffle(total_trainset.T)
     features_train = total_trainset[0:-1, :]
@@ -154,7 +155,16 @@ def plot_explained_variance_pca(features):
     plt.ylabel('Fraction of explained variance')
     plt.grid(color='grey')
     plt.xticks(range(11))
+    plt.savefig('.\kfold-results\explained-variance.png')
     plt.show()
+
+def znorm(DTR, DTE):
+    mu_DTR = vcol(DTR.mean(1))
+    std_DTR = vcol(DTR.std(1))
+
+    DTR_z = (DTR - mu_DTR) / std_DTR
+    DTE_z = (DTE - mu_DTR) / std_DTR
+    return DTR_z, DTE_z
 
 
 

@@ -41,12 +41,14 @@ def k_fold_cv(features_train, labels_train, k):
                 labels_training.append(labels_folds[j])
         train = np.hstack(train)
         labels_training = np.hstack(labels_training)
+        znorm_train, znorm_eval = znorm(train, eval)
+
 
         ### MVG ###
-        mvg = MVG(train, labels_training)
-        MVG_scores.append(mvg.llr(eval, 'standard'))
-        MVG_NB_scores.append(mvg.llr(eval, 'nb'))
-        MVG_TIED_scores.append(mvg.llr(eval, 'tied'))
+        mvg = MVG(znorm_train, labels_training)
+        MVG_scores.append(mvg.llr(znorm_eval, 'standard'))
+        MVG_NB_scores.append(mvg.llr(znorm_eval, 'nb'))
+        MVG_TIED_scores.append(mvg.llr(znorm_eval, 'tied'))
         labels.append(labels_eval)
         
     MVG_scores = np.hstack(MVG_scores)
@@ -65,7 +67,7 @@ def k_fold_cv(features_train, labels_train, k):
 features_train, labels_train = load_dataset('Train.txt')
 features_train, labels_train = shuffle_dataset(features_train, labels_train)
 
-pca_dimensions = [5,6,7]
+pca_dimensions = [7,8,9]
 for pca in pca_dimensions:
     P, _ = PCA(features_train, pca)
     y = np.dot(P.T, features_train)

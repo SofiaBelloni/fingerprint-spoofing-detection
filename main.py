@@ -8,7 +8,10 @@ from metrics import *
 ### LOADING THE DATASET ###
 features_train, labels_train = load_dataset('Train.txt')
 features_test, labels_test = load_dataset('Test.txt')
-
+print('Train')
+print_dataset_info(features_train, labels_train)
+print('Test')
+print_dataset_info(features_test, labels_test)
 ### PLOTTING PCA EXPLAINED VARIANCE
 plot_explained_variance_pca(features_train)
 
