@@ -64,8 +64,8 @@ features_train, labels_train = shuffle_dataset(features_train, labels_train)
 
 
 #        SVM: linear, znorm, pca=7
-pt = 0.7
-#pt = 0.3
+#pt = 0.7
+pt = 0.3
 C = [1E-5, 1E-4, 1E-3, 1E-2, 1E-1, 1, 10, 100]
 
 #C = [1E-5, 1E-4, 1E-3, 1E-2, 1E-1, 1]
@@ -99,7 +99,7 @@ plt.xlabel('C')
 plt.ylabel('minDCF')
 plt.legend()
 plt.xticks(range(len(C)), C)
-plt.savefig('lSVM-vs-lSVM_norm-w-pca=7-pi=09-pt=07.png')
+plt.savefig('lSVM-vs-lSVM_norm-w-pca=7-pi=05-pt=03.png')
 plt.show()
 
 
@@ -134,7 +134,7 @@ plt.xlabel('C')
 plt.ylabel('minDCF')
 plt.legend()
 plt.xticks(range(len(C)), C)
-plt.savefig('pSVM-vs-pSVM_norm-w-pca=7-pi=09-pt=07.png')
+plt.savefig('pSVM-vs-pSVM_norm-w-pca=7-pi=05-pt=03.png')
 plt.show()
 
 
@@ -169,6 +169,6 @@ plt.xlabel('C')
 plt.ylabel('minDCF')
 plt.legend()
 plt.xticks(range(len(C)), C)
-plt.savefig('rbfSVM-vs-rbfSVM_norm-w-pca=7-pi=09-pt=07.png')
+plt.savefig('rbfSVM-vs-rbfSVM_norm-w-pca=7-pi=05-pt=03.png')
 plt.show()
 
