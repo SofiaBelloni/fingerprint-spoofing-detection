@@ -4,39 +4,28 @@ import scipy.special
 from project import vcol, vrow
 
 class GMM_classifier:
-    def __init__(self, DTR, LTR, n, mode, tiedness):
+    def __init__(self, DTR, LTR, n):
         self.DTR = DTR
         self.LTR = LTR
         self.n = n #number doublings in LBG, the number of components will be 2^n
         self.gmm0 = None
         self.gmm1 = None
-        self.mode = mode
-        self.tiedness = tiedness
-
-    def temporary_predict(self, DTE):
-        self.train()
-        ll0, ll1 = self.compute_lls(DTE)
-        predictions = (ll1 - ll0) > 0
-        return predictions
-
     
-    def train(self):
+    def train(self, mode,tiedness):
         D0 = self.DTR[:, self.LTR==0]
         D1 = self.DTR[:, self.LTR==1]
         
-        self.gmm0 = self._LBG(D0, self.n)
-        self.gmm1 = self._LBG(D1, self.n)
+        self.gmm0 = self._LBG(D0, self.n, mode, tiedness)
+        self.gmm1 = self._LBG(D1, self.n, mode, tiedness)
     
-    def compute_lls(self, DTE):
+    
+    def compute_scores(self, DTE, mode, tiedness):
+        self.train(mode, tiedness)
         ll0 = self._GMM_ll_per_sample(DTE, self.gmm0)
         ll1 = self._GMM_ll_per_sample(DTE, self.gmm1)
-        return ll0, ll1 
-    
-    def compute_scores(self, DTE):
-        ll0, ll1 = self.compute_lls(DTE)
         return ll1-ll0
     
-    def _LBG(self, X, doublings):
+    def _LBG(self, X, doublings, mode, tiedness):
         initial_mu = vcol(X.mean(1))
         initial_sigma = numpy.cov(X)
         
@@ -54,13 +43,13 @@ class GMM_classifier:
                 component2 = (w/2, mu-d, sigma)
                 doubled_gmm.append(component1)
                 doubled_gmm.append(component2)
-            if self.mode == "full" and self.tiedness == "untied":
+            if mode == "full" and tiedness == "untied":
                 gmm = self._GMM_EM(X, doubled_gmm)
-            elif self.mode == "naive" and self.tiedness == "untied":
+            elif mode == "naive" and tiedness == "untied":
                 gmm = self._GMM_EM_diag(X, doubled_gmm)
-            elif self.mode == "full" and self.tiedness == "tied":
+            elif mode == "full" and tiedness == "tied":
                 gmm = self._GMM_EM_tied(X, doubled_gmm)
-            elif self.mode == "naive" and self.tiedness == "tied":
+            elif mode == "naive" and tiedness == "tied":
                 gmm = self._GMM_EM_diag_tied(X, doubled_gmm)
         return gmm
     
@@ -119,8 +108,6 @@ class GMM_classifier:
                 
                 gmm_new.append((w, mu, sigma))
             gmm = gmm_new
-            #print(ll_new)
-        #print(ll_new-ll_old)
         return gmm
     
     def _GMM_EM_diag(self, X, gmm):
