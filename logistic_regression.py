@@ -49,3 +49,17 @@ class logRegClass:
         # if self.pt is not None:
         #     scores = scores - np.log(self.DTR[:, self.LTR == 1].shape[1] / self.DTR[:, self.LTR == 0].shape[1]  )
         return scores
+    
+    def test_logreg_cali(self, DTR, LTR, DTE):
+        self.DTR  = DTR
+        self.LTR = LTR
+        self.nT = len(np.where(LTR == 1)[0])
+        self.nF = len(np.where(LTR == 0)[0])
+        _v, _J, _d = scipy.optimize.fmin_l_bfgs_b(self.logreg_obj, np.zeros(DTR.shape[0] + 1), approx_grad=True)
+        _w = _v[0:DTR.shape[0]]
+        _b = _v[-1]
+        calibration =  np.log(self.pt / (1 - self.pt))
+        self.b = _b
+        self.w = _w
+        STE = np.dot(_w.T, DTE) + _b - calibration
+        return _w, _b, calibration   

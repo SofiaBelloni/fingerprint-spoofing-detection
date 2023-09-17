@@ -124,22 +124,27 @@ znorm_full_tied = []
 znorm_full_untied = []
 znorm_naive_tied = []
 znorm_naive_untied = []
-N = [1, 2, 3, 4, 5]
 
-for n in N:
-    minDCF_full_tied, minDCF_full_untied, minDCF_naive_tied, minDCF_naive_untied, \
-            znorm_minDCF_full_tied, znorm_minDCF_full_untied, znorm_minDCF_naive_tied, znorm_minDCF_naive_untied = k_fold_cv(features_train, labels_train, 10, n)    
-    print(f'Ho fatto la k fold - n = {n}')
-    full_tied.append(minDCF_full_tied)
-    full_untied.append(minDCF_full_untied)
-    naive_tied.append(minDCF_naive_tied)
-    naive_untied.append(minDCF_naive_untied)
-    znorm_full_tied.append(znorm_minDCF_full_tied)
-    znorm_full_untied.append(znorm_minDCF_full_untied)
-    znorm_naive_tied.append(znorm_minDCF_naive_tied)
-    znorm_naive_untied.append(znorm_minDCF_naive_untied)
+minDCF_full_tied, minDCF_full_untied, minDCF_naive_tied, minDCF_naive_untied, \
+            znorm_minDCF_full_tied, znorm_minDCF_full_untied, znorm_minDCF_naive_tied, znorm_minDCF_naive_untied = k_fold_cv(features_train, labels_train, 10, 4) 
 
-plot_hist(N, full_tied, znorm_full_tied, "full_tied")
-plot_hist(N, full_untied, znorm_full_untied, "full_untied")
-plot_hist(N, naive_tied, znorm_naive_tied, "naive_tied")
-plot_hist(N, naive_untied, znorm_naive_untied, "naive_untied")
+
+# N = [1, 2, 3, 4, 5]
+
+# for n in N:
+#     minDCF_full_tied, minDCF_full_untied, minDCF_naive_tied, minDCF_naive_untied, \
+#             znorm_minDCF_full_tied, znorm_minDCF_full_untied, znorm_minDCF_naive_tied, znorm_minDCF_naive_untied = k_fold_cv(features_train, labels_train, 10, n)    
+#     print(f'Ho fatto la k fold - n = {n}')
+#     full_tied.append(minDCF_full_tied)
+#     full_untied.append(minDCF_full_untied)
+#     naive_tied.append(minDCF_naive_tied)
+#     naive_untied.append(minDCF_naive_untied)
+#     znorm_full_tied.append(znorm_minDCF_full_tied)
+#     znorm_full_untied.append(znorm_minDCF_full_untied)
+#     znorm_naive_tied.append(znorm_minDCF_naive_tied)
+#     znorm_naive_untied.append(znorm_minDCF_naive_untied)
+
+# plot_hist(N, full_tied, znorm_full_tied, "full_tied")
+# plot_hist(N, full_untied, znorm_full_untied, "full_untied")
+# plot_hist(N, naive_tied, znorm_naive_tied, "naive_tied")
+# plot_hist(N, naive_untied, znorm_naive_untied, "naive_untied")
