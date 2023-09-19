@@ -1,11 +1,12 @@
 import sys
-sys.path.append('c:\\Users\\ferla\\Documents\\GitHub\\MLPR-Fingerprint-Spoofing-Detection')
+sys.path.append('C:\\Users\\sofia\\Documents\\GitHub\\MLPR-Fingerprint-Spoofing-Detection')
 from logistic_regression import *
 from project import *
 from metrics import *
 from GMM_classifier import GMM_classifier
 from MVG_classifier import *
 from SVM_classifier import *
+from logistic_regression import *
 
 def k_fold_cv(features_train, labels_train, k, n=2):
     #1. Dividere il training set in K fold
@@ -17,6 +18,7 @@ def k_fold_cv(features_train, labels_train, k, n=2):
     znorm_GMM_naive_tied_scores = []
     znorm_MVG_standard_scores = []
     znorm_SVM_linear_scores = []
+    znorm_log_linear_scores = []
 
     labels = []
     for i in range(k):
@@ -30,6 +32,7 @@ def k_fold_cv(features_train, labels_train, k, n=2):
     eval = []
     labels_eval = []
     for i in range(k):
+        print(i)
         train = []
         labels_training = []
         for j in range(k):
@@ -49,24 +52,29 @@ def k_fold_cv(features_train, labels_train, k, n=2):
         znorm_GMM_naive_tied_scores.append(znorm_score_naive_tied)
         znorm_SVM_linear_score = znorm_SVM_model.compute_scores(znorm_eval, 'linear')
         labels.append(labels_eval)
+        logreg = logRegClass(znorm_train, labels_training, 0.1, 0.3)
+        logReg_scores = logreg.compute_scores(znorm_eval)
+        znorm_log_linear_scores.append(logReg_scores)
         znorm_MVG_standard_scores.append(znorm_MVG_model.llr(znorm_eval, 'standard'))
         znorm_SVM_linear_scores.append(znorm_SVM_linear_score)
 
     znorm_GMM_naive_tied_scores = np.hstack(znorm_GMM_naive_tied_scores)
     znorm_MVG_standard_scores = np.hstack(znorm_MVG_standard_scores)
     znorm_SVM_linear_scores = np.hstack(znorm_SVM_linear_scores)
+    znorm_log_linear_scores = np.hstack(znorm_log_linear_scores)
     labels = np.hstack(labels)
-    return znorm_MVG_standard_scores, znorm_GMM_naive_tied_scores, znorm_SVM_linear_scores, labels
+    return znorm_MVG_standard_scores, znorm_GMM_naive_tied_scores, znorm_SVM_linear_scores, znorm_log_linear_scores, labels
 
 
 features_train, labels_train = load_dataset('Train.txt')
 features_train, labels_train = shuffle_dataset(features_train, labels_train)
 P, _ = PCA(features_train, 7)
 y = np.dot(P.T, features_train)
-gmmScores, mvgScores, svmScores, labels_train = k_fold_cv(y, labels_train, 10)
+gmmScores, mvgScores, svmScores, logRegScores, labels_train = k_fold_cv(y, labels_train, 10)
 bayes_error_plot(gmmScores, labels_train, 'gmm')
 bayes_error_plot(mvgScores, labels_train, 'mvg')
 bayes_error_plot(svmScores, labels_train, 'svm')
+bayes_error_plot(logRegScores, labels_train, 'logReg')
 
 # Calibration
 svmScores, labels_train = shuffle_dataset(svmScores, labels_train)
@@ -83,5 +91,25 @@ w, b, calibration= caliLogReg.compute_calibration_score(caliTrain, caliLabelTrai
 caliLogReg_scores = np.dot(w.T, svmScores) + b - calibration
 
 bayes_error_plot(caliLogReg_scores, labels_train, 'svm-calibrated')
+
+print('LogReg calibration')
+
+# Calibration LOGREG
+logRegScores, labels_train = shuffle_dataset(logRegScores, labels_train)
+logRegScores = vrow(logRegScores)
+caliTrain = logRegScores[:, :int(logRegScores.shape[1] * 0.75)]
+caliTest = logRegScores[:, int(logRegScores.shape[1] * 0.75):]
+caliLabelTrain = labels_train[:int(len(labels_train) * 0.75)]
+caliLabelTest = labels_train[int(len(labels_train) * 0.75):]
+
+laambda = 0.01
+caliLogReg = logRegClass(caliTrain, caliLabelTrain, laambda, 0.5)
+
+w, b, calibration= caliLogReg.compute_calibration_score(caliTrain, caliLabelTrain, caliTest)
+caliLogReg_scores = np.dot(w.T, logRegScores) + b - calibration
+
+bayes_error_plot(caliLogReg_scores, labels_train, 'logreg-calibrated')
+
+
 
 
