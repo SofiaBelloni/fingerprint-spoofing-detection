@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import scipy.linalg
 import seaborn
 
-pi = 0.5
+pi = 0.9
 Cfn = 1
 Cfp = 10
 
@@ -128,9 +128,9 @@ def print_dataset_info(features, labels):
     print(features.shape)
     print('Labels shape')
     print(labels.shape)
-    print('Labels shape that are 1')
+    print('Labels == 1')
     print(get_num_labels(labels, 1))
-    print('Labels shape that are 0')
+    print('Labels == 0')
     print(get_num_labels(labels, 0))
 
 def scatter_pca(features, labels):

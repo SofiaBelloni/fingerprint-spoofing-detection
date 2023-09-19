@@ -85,15 +85,15 @@ def k_fold_cv(features_train, labels_train, k, n=2):
     labels = np.hstack(labels)
         
     ### RAW FEATURES ###
-    minDCF_full_tied = compute_minDCF(0.5, Cfn, Cfp, GMM_full_tied_scores, labels)
-    minDCF_full_untied = compute_minDCF(0.5, Cfn, Cfp, GMM_full_untied_scores, labels)
-    minDCF_naive_tied = compute_minDCF(0.5, Cfn, Cfp, GMM_naive_tied_scores, labels)
-    minDCF_naive_untied = compute_minDCF(0.5, Cfn, Cfp, GMM_naive_untied_scores, labels)
+    minDCF_full_tied = compute_minDCF(pi, Cfn, Cfp, GMM_full_tied_scores, labels)
+    minDCF_full_untied = compute_minDCF(pi, Cfn, Cfp, GMM_full_untied_scores, labels)
+    minDCF_naive_tied = compute_minDCF(pi, Cfn, Cfp, GMM_naive_tied_scores, labels)
+    minDCF_naive_untied = compute_minDCF(pi, Cfn, Cfp, GMM_naive_untied_scores, labels)
     ### ZNORM FEATURES ###
-    znorm_minDCF_full_tied = compute_minDCF(0.5, Cfn, Cfp, znorm_GMM_full_tied_scores, labels)
-    znorm_minDCF_full_untied = compute_minDCF(0.5, Cfn, Cfp, znorm_GMM_full_untied_scores, labels)
-    znorm_minDCF_naive_tied = compute_minDCF(0.5, Cfn, Cfp, znorm_GMM_naive_tied_scores, labels)
-    znorm_minDCF_naive_untied = compute_minDCF(0.5, Cfn, Cfp, znorm_GMM_naive_untied_scores, labels)
+    znorm_minDCF_full_tied = compute_minDCF(pi, Cfn, Cfp, znorm_GMM_full_tied_scores, labels)
+    znorm_minDCF_full_untied = compute_minDCF(pi, Cfn, Cfp, znorm_GMM_full_untied_scores, labels)
+    znorm_minDCF_naive_tied = compute_minDCF(pi, Cfn, Cfp, znorm_GMM_naive_tied_scores, labels)
+    znorm_minDCF_naive_untied = compute_minDCF(pi, Cfn, Cfp, znorm_GMM_naive_untied_scores, labels)
 
     return minDCF_full_tied, minDCF_full_untied, minDCF_naive_tied, minDCF_naive_untied, \
             znorm_minDCF_full_tied, znorm_minDCF_full_untied, znorm_minDCF_naive_tied, znorm_minDCF_naive_untied
