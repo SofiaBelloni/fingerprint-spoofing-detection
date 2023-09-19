@@ -23,8 +23,40 @@ y_test = np.dot(P.T, features_test)
 znorm_train_pca, znorm_test_pca = znorm(y_train, y_test)
 znorm_train, znorm_test = znorm(features_train, features_test)
 
+#### COMPUTE minDCF raw features and no PCA####
+print('raw features and No PCA:')
+mvg = MVG(features_train, labels_train)
+print('Computing MVG standard scores...')
+MVG_scores = mvg.llr(features_test, 'standard')
+print('Computing MVG nb scores...')
+MVG_NB_scores = mvg.llr(features_test, 'nb')
+
+minDCF_MVG_score = compute_minDCF(pi, Cfn, Cfp, MVG_scores, labels_test)
+minDCF_MVG_NB_score = compute_minDCF(pi, Cfn, Cfp, MVG_NB_scores, labels_test)
+
+print('minDCF MVG:')
+print(minDCF_MVG_score)
+print('minDCF MVG nb:')
+print(minDCF_MVG_NB_score)
+
+#### COMPUTE minDCF raw features and PCA = 7####
+print('raw features and PCA = 7:')
+mvg = MVG(y_train, labels_train)
+print('Computing MVG standard scores...')
+MVG_scores = mvg.llr(y_test, 'standard')
+print('Computing MVG nb scores...')
+MVG_NB_scores = mvg.llr(y_test, 'nb')
+
+minDCF_MVG_score = compute_minDCF(pi, Cfn, Cfp, MVG_scores, labels_test)
+minDCF_MVG_NB_score = compute_minDCF(pi, Cfn, Cfp, MVG_NB_scores, labels_test)
+
+print('minDCF MVG:')
+print(minDCF_MVG_score)
+print('minDCF MVG nb:')
+print(minDCF_MVG_NB_score)
+
 #### COMPUTE minDCF no pca ####
-print('No PCA:')
+print('znorm and No PCA:')
 mvg = MVG(znorm_train, labels_train)
 print('Computing MVG standard scores...')
 MVG_scores = mvg.llr(znorm_test, 'standard')
@@ -40,7 +72,7 @@ print('minDCF MVG nb:')
 print(minDCF_MVG_NB_score)
 
 #### COMPUTE minDCF with pca = 7 ####
-print('With PCA = 7:')
+print('With znorm and PCA = 7:')
 mvg = MVG(znorm_train_pca, labels_train)
 print('Computing MVG standard scores...')
 MVG_scores = mvg.llr(znorm_test_pca, 'standard')
