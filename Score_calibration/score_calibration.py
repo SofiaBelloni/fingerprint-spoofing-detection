@@ -7,11 +7,6 @@ from GMM_classifier import GMM_classifier
 from MVG_classifier import *
 from SVM_classifier import *
 
-
-#1. Scegliere top 3 modelli
-#minDCF_GMM_znorm_PCA7_naive_tied_N4 = 0.2536680327868852
-#MVG_znorm_PCA7_standard
-
 def k_fold_cv(features_train, labels_train, k, n=2):
     #1. Dividere il training set in K fold
     dim = features_train.shape[1]
@@ -64,8 +59,6 @@ def k_fold_cv(features_train, labels_train, k, n=2):
     return znorm_MVG_standard_scores, znorm_GMM_naive_tied_scores, znorm_SVM_linear_scores, labels
 
 
-
-
 features_train, labels_train = load_dataset('Train.txt')
 features_train, labels_train = shuffle_dataset(features_train, labels_train)
 P, _ = PCA(features_train, 7)
@@ -89,6 +82,6 @@ caliLogReg = logRegClass(caliTrain, caliLabelTrain, laambda, 0.5)
 w, b, calibration= caliLogReg.compute_calibration_score(caliTrain, caliLabelTrain, caliTest)
 caliLogReg_scores = np.dot(w.T, svmScores) + b - calibration
 
-bayes_error_plot(caliLogReg_scores, labels_train, 'svm-cali')
+bayes_error_plot(caliLogReg_scores, labels_train, 'svm-calibrated')
 
 
